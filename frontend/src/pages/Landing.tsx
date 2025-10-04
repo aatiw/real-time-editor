@@ -14,6 +14,7 @@ function Landing() {
   };
 
   const handleJoin = (e: React.FormEvent) => {
+    
   };
 
   return (

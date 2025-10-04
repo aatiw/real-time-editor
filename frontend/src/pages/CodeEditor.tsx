@@ -1,33 +1,17 @@
 import { Users } from "lucide-react";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 
 export default function CodeEditor() {
-    useEffect(() => {
-        handleChange();
-    }, []);
-
-    function handleChange() {
-        const textNumber = document.getElementById("textLines");
-        const textlines = document.getElementById("area");
-
-        //@ts-ignore
-        const lines = textlines?.value.split('\n').length;
-        let lineNumbers = "";
-
-        for(let i=1; i<=lines; i++){
-            lineNumbers += i + "\n"
-        }
-
-        //@ts-ignore
-        textNumber.textContent = lineNumbers;
-    }
+    const [val, setValue] = useState("");
 
     function handleScroll(){
         const textNumber = document.getElementById("textLines");
         const textlines = document.getElementById("area");
 
-        //@ts-ignore
-        textNumber?.scrollTop = textlines?.scrollTop;
+        
+        if(textNumber && textlines){
+            textNumber.scrollTop = textlines.scrollTop;
+        }
     }
 
   return (
@@ -36,8 +20,8 @@ export default function CodeEditor() {
             <div className="h-screen flex flex-row">
 
                 {/* sidebar */}
-                <div className="min-w-[20vw] bg-gray-600">
-                    <div className="w-full h-full flex flex-col relative">
+                <div className="min-w-[20vw] h-screen bg-gray-600">
+                    <div className="w-full h-screen flex flex-col relative">
 
 
                         <div className="flex flex-row items-center justify-center gap-2 mt-8">
@@ -62,14 +46,21 @@ export default function CodeEditor() {
                 </div>
 
                 {/* editor */}
-                <div className="w-full bg-white flex flex-row">
-                    <div id="textLines" className="w-[5vh] shadow-xl shadow-gray-400"></div>
+                <div className="w-full h-screen bg-white flex flex-row">
+                    <div id="textLines" className="w-[5vh] shadow-xl bg-amber-50 shadow-gray-400 flex flex-col pl-1 pt-2">
+                        {Array.from({length: val.split("\n").length}, (_, i) => (
+                            <span key={i}>{i+1}.</span>
+                        ))}
+                    </div>
                     <textarea
                         id="area" 
-                        className="w-full pl-4 pt-2 border-none outline-none shadow-none focus:outline-none focus:border-none"
-                        onInput={handleChange}
+                        className="w-full pl-4 pt-2 bg-amber-200 border-none outline-none shadow-none focus:outline-none focus:border-none overflow-hidden"
+                        value={val}
+                        onChange={(e) => {
+                            setValue(e.target.value)
+                        }}
                         onScroll={handleScroll}
-                        ></textarea>
+                    ></textarea>
                 </div>
             </div>
         </div>
