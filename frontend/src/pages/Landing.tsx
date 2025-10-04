@@ -1,11 +1,13 @@
 import { useState } from 'react';
 import { Hash, Users } from 'lucide-react';
 import toast from 'react-hot-toast';
+import axios from 'axios';
 
 function Landing() {
 
   const [roomId, setRoomId] = useState('');
   const [username, setUsername] = useState('');
+  const ws = new WebSocket("ws://localhost:8080");
 
   const generateRoomId = () => {
     const randomId = Math.random().toString(36).slice(2).toUpperCase();
@@ -13,9 +15,21 @@ function Landing() {
     toast.success('RoomId generated');
   };
 
-  const handleJoin = (e: React.FormEvent) => {
-    
+  const handleJoin = async () => {
+    try {
+      await axios.post("http://localhost:3000/submit", {roomId, username});
+      ws.send(JSON.stringify({type:"join", room: roomId, username: username}));
+    } catch (error) {
+      console.log("error in handlejoin landing page", error);
+    }    
   };
+
+  ws.onmessage = (event) => {
+      const data = JSON.parse(event.data);
+      if(data.type === "msg"){
+        console.log("message from backend", data.content);
+      }
+    }
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-slate-50 to-slate-100 flex items-center justify-center p-4">
