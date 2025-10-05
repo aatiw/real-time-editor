@@ -27,7 +27,7 @@ function Landing() {
     setIsLoading(true);
 
     try {
-      await axios.post(BACKEND_URL, {roomId, username});
+      await axios.post(`${BACKEND_URL}/submit`, {roomId, username});
 
       navigate('/canvas', {
         state:{
