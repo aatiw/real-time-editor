@@ -1,7 +1,7 @@
 import { Toaster } from 'react-hot-toast';
 import Landing from './pages/Landing'
 import CodeEditor from './pages/CodeEditor';
-import { BrowserRouter as Router, Route } from 'react-router-dom';
+import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
 
 function App() {
 
@@ -9,8 +9,10 @@ function App() {
     <div>
       <Toaster />
       <Router>
-        <Route path='/' element={<Landing />} />
-        <Route path='/canvas' element={<CodeEditor />} />
+        <Routes>
+          <Route path='/' element={<Landing />} />
+          <Route path='/canvas' element={<CodeEditor />} />
+        </Routes>
       </Router>
     </div>
   )

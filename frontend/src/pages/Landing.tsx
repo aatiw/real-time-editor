@@ -2,12 +2,14 @@ import { useState } from 'react';
 import { Hash, Users } from 'lucide-react';
 import toast from 'react-hot-toast';
 import axios from 'axios';
-
+import { useNavigate } from 'react-router-dom';
+import { BACKEND_URL } from '../config';
 function Landing() {
 
+  const navigate = useNavigate();
   const [roomId, setRoomId] = useState('');
   const [username, setUsername] = useState('');
-  const ws = new WebSocket("ws://localhost:8080");
+  const [isLoading, setIsLoading] = useState(false);
 
   const generateRoomId = () => {
     const randomId = Math.random().toString(36).slice(2).toUpperCase();
@@ -15,21 +17,32 @@ function Landing() {
     toast.success('RoomId generated');
   };
 
-  const handleJoin = async () => {
+  const handleJoin = async (e: React.FormEvent) => {
+    e.preventDefault();
+
+    if(!roomId.trim() || !username.trim()){
+      toast.error('please fill all details')
+      return
+    }
+    setIsLoading(true);
+
     try {
-      await axios.post("http://localhost:3000/submit", {roomId, username});
-      ws.send(JSON.stringify({type:"join", room: roomId, username: username}));
+      await axios.post(BACKEND_URL, {roomId, username});
+
+      navigate('/canvas', {
+        state:{
+          roomId,
+          username
+        }
+      })
+
     } catch (error) {
       console.log("error in handlejoin landing page", error);
-    }    
+    } finally {
+      setIsLoading(true);
+    } 
   };
 
-  ws.onmessage = (event) => {
-      const data = JSON.parse(event.data);
-      if(data.type === "msg"){
-        console.log("message from backend", data.content);
-      }
-    }
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-slate-50 to-slate-100 flex items-center justify-center p-4">
@@ -57,6 +70,7 @@ function Landing() {
                     value={roomId}
                     onChange={(e) => setRoomId(e.target.value.toUpperCase())}
                     placeholder="Enter room ID"
+                    disabled={isLoading}
                     className="w-full pl-10 pr-4 py-3 border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-slate-900 focus:border-transparent transition"
                     required
                   />
@@ -64,6 +78,7 @@ function Landing() {
                 <button
                   type="button"
                   onClick={generateRoomId}
+                  disabled={isLoading}
                   className="px-4 py-3 bg-slate-100 text-slate-700 rounded-lg hover:bg-slate-200 transition font-medium whitespace-nowrap"
                 >
                   Generate
@@ -83,6 +98,7 @@ function Landing() {
                   value={username}
                   onChange={(e) => setUsername(e.target.value)}
                   placeholder="Enter your name"
+                  disabled={isLoading}
                   className="w-full pl-10 pr-4 py-3 border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-slate-900 focus:border-transparent transition"
                   required
                 />
@@ -91,9 +107,10 @@ function Landing() {
 
             <button
               type="submit"
+              disabled={isLoading}
               className="w-full bg-slate-900 text-white py-3 rounded-lg hover:bg-slate-800 transition font-semibold text-lg shadow-md hover:shadow-lg"
             >
-              Join Room
+              {isLoading ? 'Joining':'Join Room'}
             </button>
           </form>
         </div>
