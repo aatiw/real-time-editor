@@ -15,10 +15,12 @@ A collaborative **real-time code editor** that allows multiple users to join a r
 ## 📸 Preview
 
 ### 🪪 Join Room Page
-![Join Room](./realtimeeditor.png)
+<img width="1732" height="939" alt="realtimeeditor" src="https://github.com/user-attachments/assets/a7cede8c-a393-438b-a423-ed1f0f6cb7da" />
+
 
 ### 💻 Collaborative Code Editor
-![Code Editor](./rte.png)
+<img width="1920" height="1080" alt="rte" src="https://github.com/user-attachments/assets/557d7233-2777-45e6-af42-13e12f353779" />
+
 
 ---
 
